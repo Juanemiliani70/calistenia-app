@@ -1,0 +1,34 @@
+name: calistenia_app
+description: App de calistenia - Sprint 1
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Cliente HTTP para hacer requests a la API
+  http: ^1.2.1
+
+  # Almacenamiento seguro de tokens JWT
+  flutter_secure_storage: ^9.0.0
+
+  # Manejo de rutas y navegación
+  go_router: ^13.2.0
+
+  # Manejo de estado
+  provider: ^6.1.2
+
+  # Íconos extras
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
