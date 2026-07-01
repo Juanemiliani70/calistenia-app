@@ -11,10 +11,13 @@ class ApiConstants {
   static const String verificarEmail = '$baseUrl/auth/verificar-email';
   static const String recuperarPassword = '$baseUrl/auth/recuperar-password';
   static const String resetearPassword = '$baseUrl/auth/resetear-password';
+  static const String miCodigoInvitacion = '$baseUrl/auth/mi-codigo-invitacion';
+
 
   // ── ALUMNOS ───────────────────────────────────────────────────────────────
   static const String alumnosPendientes = '$baseUrl/alumnos/pendientes';
   static const String alumnosAprobados = '$baseUrl/alumnos/aprobados';
+  static const String alumnos = '$baseUrl/alumnos'; // base para /{id}/revision
 
   // ── USUARIOS ──────────────────────────────────────────────────────────────
   static const String usuarios = '$baseUrl/usuarios';

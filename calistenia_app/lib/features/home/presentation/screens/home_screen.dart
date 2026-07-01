@@ -4,6 +4,8 @@ import 'package:calistenia_app/core/storage/token_storage.dart';
 import 'package:calistenia_app/features/auth/data/auth_service.dart';
 import 'package:calistenia_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:calistenia_app/core/widgets/kaizen_logo.dart';
+import 'package:calistenia_app/features/home/presentation/screens/pending_students_screen.dart';
+import 'package:calistenia_app/features/home/presentation/screens/approved_students_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -119,7 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
           titulo: 'Solicitudes pendientes',
           subtitulo: 'Aprobá o rechazá nuevos alumnos',
           onTap: () {
-            // TODO: navegar a pantalla de alumnos pendientes
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PendingStudentsScreen()),
+            );
           },
         ),
         const SizedBox(height: 12),
@@ -128,7 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
           titulo: 'Mis alumnos',
           subtitulo: 'Gestioná las rutinas y el progreso de tus alumnos',
           onTap: () {
-            // TODO: navegar a pantalla de alumnos aprobados
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ApprovedStudentsScreen()),
+            );
           },
         ),
       ],
