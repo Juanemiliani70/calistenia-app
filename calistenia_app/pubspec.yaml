@@ -25,6 +25,9 @@ dependencies:
   # Íconos extras
   cupertino_icons: ^1.0.6
 
+  # Reproductor de YouTube embebido
+  youtube_player_iframe: ^5.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -6,6 +6,7 @@ import 'package:calistenia_app/features/auth/presentation/screens/login_screen.d
 import 'package:calistenia_app/core/widgets/kaizen_logo.dart';
 import 'package:calistenia_app/features/home/presentation/screens/pending_students_screen.dart';
 import 'package:calistenia_app/features/home/presentation/screens/approved_students_screen.dart';
+import 'package:calistenia_app/features/routines/presentation/screens/student_routine_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -145,14 +146,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Vista para alumnos — estado de su cuenta y rutinas
   Widget _buildVistaAlumno() {
+    // Necesitamos el id del alumno para cargar su rutina
+    final idUsuario = _perfil?['id'];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _MenuCard(
           icono: Icons.fitness_center,
-          titulo: 'Mis rutinas',
-          subtitulo: 'Próximamente',
-          onTap: () {},
+          titulo: 'Mi rutina',
+          subtitulo: 'Mi rutina del mes',
+          onTap: idUsuario != null
+          ?() => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => StudentRoutineScreen(
+                  idAlumno: idUsuario),
+                ),
+              )
+            : null, 
         ),
         const SizedBox(height: 12),
         _MenuCard(
@@ -171,13 +183,13 @@ class _MenuCard extends StatelessWidget {
   final IconData icono;
   final String titulo;
   final String subtitulo;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _MenuCard({
     required this.icono,
     required this.titulo,
     required this.subtitulo,
-    required this.onTap,
+    this.onTap,
   });
 
   @override

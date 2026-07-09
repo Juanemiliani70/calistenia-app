@@ -22,4 +22,14 @@ class ApiConstants {
   // ── USUARIOS ──────────────────────────────────────────────────────────────
   static const String usuarios = '$baseUrl/usuarios';
   static const String miPerfil = '$baseUrl/usuarios/me/perfil';
+
+  // ── RUTINAS ───────────────────────────────────────────────────────────────
+  static const String rutinas = '$baseUrl/rutinas';
+  static String rutinaActiva(int idAlumno) => '$baseUrl/rutinas/alumno/$idAlumno/activa';
+  static String historialRutinas(int idAlumno) => '$baseUrl/rutinas/alumno/$idAlumno/historial';
+  static String diasRutina(int idRutina) => '$baseUrl/rutinas/$idRutina/dias';
+  static String bloquesdia(int idDia) => '$baseUrl/rutinas/dias/$idDia/bloques';
+  static String ejerciciosBloque(int idBloque) => '$baseUrl/rutinas/bloques/$idBloque/ejercicios';
+  static String editarEjercicio(int idEjercicio) => '$baseUrl/rutinas/ejercicios/$idEjercicio';
 }
+

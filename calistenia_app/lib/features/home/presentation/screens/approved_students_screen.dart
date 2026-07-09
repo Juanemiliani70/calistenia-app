@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:calistenia_app/core/constants/app_colors.dart';
 import 'package:calistenia_app/core/constants/api_constants.dart';
 import 'package:calistenia_app/core/network/http_client.dart';
+import 'package:calistenia_app/features/routines/presentation/screens/routine_history_screen.dart';
+import 'package:calistenia_app/features/routines/presentation/screens/routine_screen.dart';
 
 class ApprovedStudentsScreen extends StatefulWidget {
   const ApprovedStudentsScreen({super.key});
@@ -89,66 +91,112 @@ class _ApprovedStudentsScreenState extends State<ApprovedStudentsScreen> {
                         ),
                         child: Row(
                           children: [
-                            // Avatar con inicial
-                            Container(
-                              width: 44,
-                              height: 44,
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(22),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  alumno['nombre'][0].toUpperCase(),
-                                  style: const TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
+                            // Info del alumno
+                            Row(
+                              children: [
+                                // Inicial del nombre del alumno
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(22),
                                   ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${alumno['nombre']} ${alumno['apellido']}',
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
+                                  child: Center(
+                                    child: Text(
+                                      alumno['nombre'][0].toUpperCase(),
+                                      style: const TextStyle(
+                                        color: AppColors.primary,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    'Nivel: ${alumno['nivel']}',
-                                    style: const TextStyle(
-                                      color: AppColors.textSecondary,
-                                      fontSize: 13,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${alumno['nombre']} ${alumno['apellido']}',
+                                        style: const TextStyle(
+                                          color: AppColors.textPrimary,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Nivel: ${alumno['nivel']}',
+                                        style: const TextStyle(
+                                          color: AppColors.textSecondary,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Badge de nivel
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.success.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const Text(
+                                    'ACTIVO',
+                                    style: TextStyle(
+                                      color: AppColors.success,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            // Badge de nivel
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.success.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: const Text(
-                                'ACTIVO',
-                                style: TextStyle(
-                                  color: AppColors.success,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
                                 ),
-                              ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 12),
+                            const Divider(color: AppColors.border, height: 1),
+                            const SizedBox(height: 12),
+
+                            // Botones de acción
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    icon: const Icon(Icons.history, size: 16),
+                                    label: const Text('HISTORIAL'),
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => RoutineHistoryScreen(
+                                          idAlumno: alumno['id'],
+                                          nombreAlumno: '${alumno['nombre']} ${alumno['apellido']}',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    icon: const Icon(Icons.add, size: 16),
+                                    label: const Text('RUTINA'),
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => RoutineScreen(
+                                          idAlumno: alumno['id'],
+                                          nombreAlumno: '${alumno['nombre']} ${alumno['apellido']}',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
