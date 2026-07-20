@@ -22,6 +22,15 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
+  static const List<Map<String, dynamic>> _coloresBloque = [
+    {'fondo': Color(0xFFFFF9E6), 'texto': Color(0xFF7A6000)},
+    {'fondo': Color(0xFFF0FFF0), 'texto': Color(0xFF1A5C1A)},
+    {'fondo': Color(0xFFF0F4FF), 'texto': Color(0xFF1A2E7A)},
+    {'fondo': Color(0xFFFFF0F0), 'texto': Color(0xFF7A1A1A)},
+    {'fondo': Color(0xFFF5F0FF), 'texto': Color(0xFF3A1A7A)},
+    {'fondo': Color(0xFFF0FAFA), 'texto': Color(0xFF1A5A5A)},
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -29,10 +38,11 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
   }
 
   Future<void> _cargarRutina() async {
-    setState(() { _cargando = true; _sinRutina = false; });
-
+    setState(() {
+      _cargando = true;
+      _sinRutina = false;
+    });
     final resultado = await RoutineService.obtenerRutinaActiva(widget.idAlumno);
-
     setState(() {
       _cargando = false;
       if (resultado['exito']) {
@@ -69,10 +79,9 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
         children: [
           const Icon(Icons.fitness_center, color: AppColors.textSecondary, size: 56),
           const SizedBox(height: 16),
-          const Text(
-            'Sin rutina este mes',
-            style: TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600),
-          ),
+          const Text('Sin rutina este mes',
+              style: TextStyle(
+                  color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           const Text(
             'Tu profesor todavía no cargó tu rutina para este mes',
@@ -92,7 +101,6 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header del mes
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -100,13 +108,9 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
           child: Text(
             '$mes $anio',
             style: const TextStyle(
-              color: AppColors.primary,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-            ),
+                color: AppColors.primary, fontSize: 20, fontWeight: FontWeight.w700),
           ),
         ),
-
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
@@ -129,9 +133,9 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
         border: Border.all(color: AppColors.border),
       ),
       child: ExpansionTile(
-        // Día expandible — por defecto colapsado
         initiallyExpanded: false,
         tilePadding: EdgeInsets.zero,
+        childrenPadding: EdgeInsets.zero,
         title: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: const BoxDecoration(
@@ -144,106 +148,125 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
           child: Text(
             'Día ${dia['numero_dia']} — ${dia['nombre']}',
             style: const TextStyle(
-              color: AppColors.textDark,
-              fontWeight: FontWeight.w700,
-              fontSize: 15,
-            ),
+                color: AppColors.textDark, fontWeight: FontWeight.w700, fontSize: 15),
           ),
         ),
         iconColor: AppColors.primary,
         collapsedIconColor: AppColors.textSecondary,
         children: bloques.isEmpty
-            ? [const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text('Sin ejercicios', style: TextStyle(color: AppColors.textSecondary)),
-              )]
-            : bloques.map((b) => _buildBloque(b)).toList(),
+            ? [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('Sin bloques',
+                      style: TextStyle(color: AppColors.textSecondary)),
+                )
+              ]
+            : [_buildTablaRutina(bloques)],
       ),
     );
   }
 
-  Widget _buildBloque(Map<String, dynamic> bloque) {
-    final ejercicios = bloque['ejercicios'] as List? ?? [];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Nombre del bloque
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Text(
-            bloque['nombre'],
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
-            ),
-          ),
-        ),
-        ...ejercicios.map((e) => _buildEjercicio(e)).toList(),
-        const Divider(color: AppColors.border, height: 1),
-      ],
+  Widget _buildTablaRutina(List bloques) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        bottomLeft: Radius.circular(12),
+        bottomRight: Radius.circular(12),
+      ),
+      child: Column(
+        children: [
+          _buildHeaderColumnas(),
+          ...bloques.asMap().entries.map((entry) {
+            return _buildFilaBloque(entry.value as Map<String, dynamic>, entry.key);
+          }).toList(),
+        ],
+      ),
     );
   }
 
-  Widget _buildEjercicio(Map<String, dynamic> ejercicio) {
-    final tieneVideo = ejercicio['url_video'] != null;
+  Widget _buildHeaderColumnas() {
+    return Container(
+      color: AppColors.surface,
+      child: Row(
+        children: [
+          SizedBox(width: 110, child: _headerCell('Bloque')),
+          Expanded(flex: 3, child: _headerCell('Ejercicio')),
+          Expanded(flex: 2, child: _headerCell('Dificultad')),
+          Expanded(flex: 2, child: _headerCell('Repeticiones')),
+          SizedBox(width: 70, child: _headerCell('Descanso')),
+          SizedBox(width: 85, child: _headerCell('Series')),
+        ],
+      ),
+    );
+  }
 
-    return InkWell(
-      onTap: tieneVideo
-          ? () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => VideoPlayerScreen(
-                    urlVideo: ejercicio['url_video'],
-                    nombreEjercicio: ejercicio['nombre'],
+  Widget _buildFilaBloque(Map<String, dynamic> bloque, int indexBloque) {
+    final ejercicios = bloque['ejercicios'] as List? ?? [];
+    final color = _coloresBloque[indexBloque % _coloresBloque.length];
+    final colorFondo = color['fondo'] as Color;
+    final colorTexto = color['texto'] as Color;
+    final series = ejercicios.isNotEmpty ? ejercicios[0]['series']?.toString() ?? '' : '';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colorFondo,
+        border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Nombre del bloque
+            Container(
+              width: 110,
+              decoration: const BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: AppColors.primary, width: 3),
+                  right: BorderSide(color: AppColors.border, width: 0.5),
+                ),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                  child: Text(
+                    bloque['nombre'],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: colorTexto, fontWeight: FontWeight.w700, fontSize: 12),
                   ),
                 ),
-              )
-          : null,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (tieneVideo)
-              const Padding(
-                padding: EdgeInsets.only(right: 8, top: 2),
-                child: Icon(Icons.play_circle_outline, color: AppColors.primary, size: 20),
               ),
+            ),
+
+            // Ejercicios
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    ejercicio['nombre'],
-                    style: TextStyle(
-                      color: tieneVideo ? AppColors.primary : AppColors.textPrimary,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  if (ejercicio['series'] != null || ejercicio['repeticiones'] != null)
-                    Text(
-                      _formatearReps(ejercicio),
-                      style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
-                    ),
-                  if (ejercicio['dificultad'] != null)
-                    Text('Dificultad: ${ejercicio['dificultad']}',
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                  if (ejercicio['descanso'] != null)
-                    Text('Descanso: ${ejercicio['descanso']}',
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                  if (ejercicio['aclaraciones'] != null)
-                    Text(ejercicio['aclaraciones'],
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12, fontStyle: FontStyle.italic)),
-                  if (ejercicio['progresion_semana3'] != null)
-                    Text('Semana 3: ${ejercicio['progresion_semana3']}',
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                  if (ejercicio['progresion_semana4'] != null)
-                    Text('Semana 4: ${ejercicio['progresion_semana4']}',
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                ],
+                children: ejercicios.isEmpty
+                    ? [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text('Sin ejercicios',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: colorTexto, fontSize: 12)),
+                        )
+                      ]
+                    : ejercicios.map((ejercicio) =>
+                        _buildFilaEjercicio(ejercicio as Map<String, dynamic>)).toList(),
+              ),
+            ),
+
+            // Series — centrado verticalmente abarcando todos los ejercicios
+            Container(
+              width: 55,
+              decoration: const BoxDecoration(
+                border: Border(left: BorderSide(color: AppColors.border, width: 0.5)),
+              ),
+              child: Center(
+                child: Text(
+                  series.isNotEmpty ? '×$series' : '—',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: colorTexto, fontWeight: FontWeight.w700, fontSize: 13),
+                ),
               ),
             ),
           ],
@@ -252,12 +275,108 @@ class _StudentRoutineScreenState extends State<StudentRoutineScreen> {
     );
   }
 
-  String _formatearReps(Map<String, dynamic> ejercicio) {
-    final reps = ejercicio['repeticiones'];
-    final series = ejercicio['series'];
-    if (series != null && reps != null) return '${series}x$reps';
-    if (reps != null) return reps;
-    if (series != null) return '$series series';
-    return '';
+  Widget _buildFilaEjercicio(Map<String, dynamic> ejercicio) {
+    final tieneVideo = ejercicio['url_video'] != null;
+
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+      ),
+      child: InkWell(
+        onTap: tieneVideo
+            ? () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => VideoPlayerScreen(
+                      urlVideo: ejercicio['url_video'],
+                      nombreEjercicio: ejercicio['nombre'],
+                    ),
+                  ),
+                )
+            : null,
+        child: Row(
+          children: [
+            // Ejercicio
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                child: Row(
+                  children: [
+                    if (tieneVideo)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 4),
+                        child: Icon(Icons.play_circle_outline,
+                            color: AppColors.primary, size: 14),
+                      ),
+                    Expanded(
+                      child: Text(
+                        ejercicio['nombre'],
+                        style: TextStyle(
+                          color: tieneVideo ? AppColors.primary : const Color(0xFF1A1A1A),
+                          fontSize: 13,
+                          fontWeight: tieneVideo ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Dificultad
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                child: Text(
+                  ejercicio['dificultad'] ?? '—',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Color(0xFF555555), fontSize: 12),
+                ),
+              ),
+            ),
+            // Repeticiones
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                child: Text(
+                  ejercicio['repeticiones'] ?? '—',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Color(0xFF1A1A1A),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            // Descanso por ejercicio
+            SizedBox(
+              width: 65,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                child: Text(
+                  ejercicio['descanso'] ?? '—',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Color(0xFF555555), fontSize: 12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _headerCell(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+            color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+    );
   }
 }

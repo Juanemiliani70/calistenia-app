@@ -88,10 +88,10 @@ class _RoutineHistoryScreenState extends State<RoutineHistoryScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => RoutineDetailScreen(
-                              idRutina: rutina['id'],
+                              idRutina: rutina['id'] as int,
                               nombreAlumno: widget.nombreAlumno,
-                              mes: rutina['mes'],
-                              anio: anio,
+                              mes: rutina['mes'] as int,
+                              anio: rutina['anio'] as int,
                             ),
                           ),
                         ),

@@ -121,6 +121,20 @@ class RoutineService {
     return {'exito': false, 'error': data['detail'] ?? 'Error al editar ejercicio'};
   }
 
+  // ── ELIMINAR EJERCICIO ────────────────────────────────────────────────────
+
+  static Future<Map<String, dynamic>> eliminarEjercicio(int idEjercicio) async {
+    final response = await ApiClient.deleteAuth(
+      ApiConstants.editarEjercicio(idEjercicio),
+    );
+
+    if (response.statusCode == 204) {
+      return {'exito': true};
+    }
+    final data = jsonDecode(response.body);
+    return {'exito': false, 'error': data['detail'] ?? 'Error al eliminar ejercicio'};
+  }
+
   // ── HU-06 — RUTINA ACTIVA DEL ALUMNO ────────────────────────────────────
 
   static Future<Map<String, dynamic>> obtenerRutinaActiva(int idAlumno) async {

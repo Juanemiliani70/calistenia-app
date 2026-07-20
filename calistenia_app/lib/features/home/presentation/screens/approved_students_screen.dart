@@ -25,7 +25,6 @@ class _ApprovedStudentsScreenState extends State<ApprovedStudentsScreen> {
 
   Future<void> _cargarAprobados() async {
     final response = await ApiClient.getAuth(ApiConstants.alumnosAprobados);
-
     setState(() {
       _cargando = false;
       if (response.statusCode == 200) {
@@ -57,11 +56,7 @@ class _ApprovedStudentsScreenState extends State<ApprovedStudentsScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
-                          Icons.groups_outlined,
-                          color: AppColors.textSecondary,
-                          size: 56,
-                        ),
+                        const Icon(Icons.groups_outlined, color: AppColors.textSecondary, size: 56),
                         const SizedBox(height: 16),
                         Text(
                           'Todavía no tenés alumnos',
@@ -83,18 +78,19 @@ class _ApprovedStudentsScreenState extends State<ApprovedStudentsScreen> {
                     itemBuilder: (context, index) {
                       final alumno = _alumnosAprobados[index];
                       return Container(
+                        width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: AppColors.surface,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: AppColors.border),
                         ),
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Info del alumno
                             Row(
                               children: [
-                                // Inicial del nombre del alumno
                                 Container(
                                   width: 44,
                                   height: 44,
@@ -128,31 +124,20 @@ class _ApprovedStudentsScreenState extends State<ApprovedStudentsScreen> {
                                       ),
                                       Text(
                                         'Nivel: ${alumno['nivel']}',
-                                        style: const TextStyle(
-                                          color: AppColors.textSecondary,
-                                          fontSize: 13,
-                                        ),
+                                        style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
                                       ),
                                     ],
                                   ),
                                 ),
-                                // Badge de nivel
                                 Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: AppColors.success.withOpacity(0.15),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: const Text(
                                     'ACTIVO',
-                                    style: TextStyle(
-                                      color: AppColors.success,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                    style: TextStyle(color: AppColors.success, fontSize: 11, fontWeight: FontWeight.w700),
                                   ),
                                 ),
                               ],
